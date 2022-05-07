@@ -28,6 +28,8 @@ class Fringe(object):
         if fringe_type is "PRIORITY":
             return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
 
+        if fringe_type is "ASTAR_PRIORITY":
+            return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
         if fringe_type is "HEURISTIC_PRIORITY":
             return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
 
@@ -48,9 +50,11 @@ class Fringe(object):
             self.print_stats()
             sys.exit(1)
         if self.__type is "PRIORITY":
-            self.__fringe.put((cost, item))
-        elif self.__type is "HEURISTIC_PRIORITY":
+            self.__fringe.put((item.priority, item))
+        elif self.__type is "ASTAR_PRIORITY":
             self.__fringe.put((cost+item.room.heuristicValue, item))
+        elif self.__type is "HEURISTIC_PRIORITY":
+            self.__fringe.put((item.room.heuristicValue, item))
         else:
             self.__fringe.put(item, block=False)
         if self.__fringe.qsize() > self.__maxSize:
@@ -64,7 +68,7 @@ class Fringe(object):
         if self.__fringe.empty():
             return None
         self.__deletions += 1
-        if self.__type is "PRIORITY" or self.__type is "HEURISTIC_PRIORITY":
+        if self.__type is "PRIORITY" or self.__type is "ASTAR_PRIORITY" or self.__type is "HEURISTIC_PRIORITY":
             cost, item = self.__fringe.get()
         else:
             item = self.__fringe.get()

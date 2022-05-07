@@ -19,6 +19,8 @@ def solve_maze_general(maze, algorithm):
     elif algorithm == "UCS":
         fr = Fringe("PRIORITY")
     elif algorithm == "ASTAR":
+        fr = Fringe("ASTAR_PRIORITY")
+    elif algorithm == "GREEDY":
         fr = Fringe("HEURISTIC_PRIORITY")
     else:
         print("Algorithm not found/implemented, exit")
