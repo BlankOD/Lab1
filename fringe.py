@@ -28,12 +28,15 @@ class Fringe(object):
         if fringe_type is "PRIORITY":
             return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
 
+        if fringe_type is "HEURISTIC_PRIORITY":
+            return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
+
     def __init__(self, fringe_type='FIFO'):
         self.__type = fringe_type
         super(Fringe, self).__init__()
         self.__fringe = self.create_fringe(self.__type)
 
-    def push(self, item):
+    def push(self, cost, item):
         """
         puts the item in the fringe
         :param item: item to put in the fringe
@@ -44,7 +47,12 @@ class Fringe(object):
                   + str(self.__MAX_FRINGE_SIZE) + ") elements")
             self.print_stats()
             sys.exit(1)
-        self.__fringe.put(item, block=False)
+        if self.__type is "PRIORITY":
+            self.__fringe.put((cost, item))
+        elif self.__type is "HEURISTIC_PRIORITY":
+            self.__fringe.put((cost+item.room.heuristicValue, item))
+        else:
+            self.__fringe.put(item, block=False)
         if self.__fringe.qsize() > self.__maxSize:
             self.__maxSize = self.__fringe.qsize()
         self.__insertions += 1
@@ -56,7 +64,11 @@ class Fringe(object):
         if self.__fringe.empty():
             return None
         self.__deletions += 1
-        return self.__fringe.get()
+        if self.__type is "PRIORITY" or self.__type is "HEURISTIC_PRIORITY":
+            cost, item = self.__fringe.get()
+        else:
+            item = self.__fringe.get()
+        return item
 
     def is_empty(self):
         """

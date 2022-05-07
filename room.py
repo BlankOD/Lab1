@@ -6,6 +6,7 @@ class Room:
 	def __init__(self, coords, maze):
 		# order: UP, DOWN, NORTH, SOUTH, EAST, WEST
 		self.connections = []
+		self.usedConnections = {'UP': False, 'DOWN': False, 'NORTH': False, 'SOUTH': False, 'EAST': False, 'WEST': False}
 		self.heuristicValue = 0
 		self.costs = dict()
 		self.coords = coords
