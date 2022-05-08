@@ -30,9 +30,8 @@ class Fringe(object):
 
         if fringe_type is "ASTAR_PRIORITY":
             return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
+
         if fringe_type is "HEURISTIC_PRIORITY":
-            return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
-        if fringe_type is "ITERATIVE_PRIORITY":
             return queue.PriorityQueue(self.__MAX_FRINGE_SIZE)
 
     def __init__(self, fringe_type='FIFO'):
@@ -40,7 +39,7 @@ class Fringe(object):
         super(Fringe, self).__init__()
         self.__fringe = self.create_fringe(self.__type)
 
-    def push(self, cost, item):
+    def push(self, item):
         """
         puts the item in the fringe
         :param item: item to put in the fringe
@@ -52,13 +51,11 @@ class Fringe(object):
             self.print_stats()
             sys.exit(1)
         if self.__type is "PRIORITY":
-            self.__fringe.put((item.priority, item))
+            self.__fringe.put((item.cost, item), block=False)
         elif self.__type is "ASTAR_PRIORITY":
-            self.__fringe.put((cost+item.room.heuristicValue, item))
+            self.__fringe.put((item.cost+item.room.heuristicValue, item), block=False)
         elif self.__type is "HEURISTIC_PRIORITY":
-            self.__fringe.put((item.room.heuristicValue, item))
-        elif self.__type is "ITERATIVE_PRIORITY":
-            self.__fringe.put((cost + item.priority, item))
+            self.__fringe.put((item.room.heuristicValue, item), block=False)
         else:
             self.__fringe.put(item, block=False)
         if self.__fringe.qsize() > self.__maxSize:
@@ -72,10 +69,11 @@ class Fringe(object):
         if self.__fringe.empty():
             return None
         self.__deletions += 1
-        if self.__type is "PRIORITY" or self.__type is "ASTAR_PRIORITY" or self.__type is "HEURISTIC_PRIORITY" or self.__type is "ITERATIVE_PRIORITY":
+        if self.__type is "PRIORITY" or self.__type is "ASTAR_PRIORITY" or self.__type is "HEURISTIC_PRIORITY":
             cost, item = self.__fringe.get()
         else:
             item = self.__fringe.get()
+
         return item
 
     def is_empty(self):

@@ -94,10 +94,10 @@ class Maze:
         cost = 1
         if direction == "UP":
             check = "U"
-            cost += 2
+            cost += 0
         if direction == "DOWN":
             check = "D"
-            cost += 1
+            cost += 0
         if cell == check or cell.isnumeric():
             room.connections.append(direction)
             if cell.isnumeric():
